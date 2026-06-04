@@ -1,0 +1,201 @@
+:root {
+    --bg-dark: #070a12;
+    --bg-container: #0f1423;
+    --bg-sub: #171e33;
+    --border-line: #242f4c;
+    --text-bright: #f8fafc;
+    --text-muted: #64748b;
+    --cyan: #06b6d4;
+    --emerald: #10b981;
+    --amber: #eab308;
+    --orange: #f97316;
+    --red: #ef4444;
+}
+
+body {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background-color: var(--bg-dark);
+    color: var(--text-bright);
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.terminal-layout {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Control Center Card */
+.control-center {
+    background-color: var(--bg-container);
+    border: 1px solid var(--border-line);
+    border-radius: 12px;
+    padding: 30px;
+}
+
+.status-indicator {
+    font-size: 0.75rem;
+    color: var(--emerald);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.console-header h1 {
+    font-size: 1.6rem;
+    margin: 6px 0;
+    font-weight: 700;
+}
+
+.console-header p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0 0 24px 0;
+}
+
+.field-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+}
+
+.interactive-input {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+input[type="password"], input[type="text"] {
+    width: 100%;
+    padding: 14px 16px;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-line);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 1.05rem;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--cyan);
+}
+
+#toggleVisibility {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+/* Gauge Block styling */
+.gauge-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+#strengthLabel { font-weight: 700; }
+
+.segmented-bar {
+    display: flex;
+    gap: 4px;
+    height: 10px;
+}
+
+.bar-seg {
+    flex: 1;
+    background-color: #1e293b;
+    border-radius: 2px;
+    transition: background-color 0.2s;
+}
+
+.bar-seg.seg-0.active { background-color: var(--red); }
+.bar-seg.seg-1.active { background-color: var(--orange); }
+.bar-seg.seg-2.active { background-color: var(--amber); }
+.bar-seg.seg-3.active { background-color: var(--emerald); }
+.bar-seg.seg-4.active { background-color: var(--cyan); }
+
+.status-tier-0 { color: var(--text-muted); }
+.status-tier-1 { color: var(--orange); }
+.status-tier-2 { color: var(--amber); }
+.status-tier-3 { color: var(--emerald); }
+.status-tier-4 { color: var(--cyan); }
+
+/* Horizontal Matrix Columns */
+.telemetry-matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.2fr;
+    gap: 20px;
+}
+
+.matrix-card {
+    background-color: var(--bg-container);
+    border: 1px solid var(--border-line);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-line);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    letter-spacing: 0.05em;
+}
+
+ul { margin: 0; padding: 0; list-style: none; }
+li { font-size: 0.85rem; margin-bottom: 8px; line-height: 1.4; }
+
+.alert-list .issue-found { color: #f87171; }
+.alert-list .no-issue { color: #4ade80; }
+.optimization-list li { color: #38bdf8; }
+
+.algo-tag {
+    font-size: 0.75rem;
+    color: #a78bfa;
+    margin-bottom: 8px;
+}
+
+.hash-box {
+    background-color: var(--bg-dark);
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-line);
+}
+
+code {
+    word-break: break-all;
+    color: #c084fc;
+    font-size: 0.8rem;
+}
+
+/* Idle block element */
+.idle-state {
+    text-align: center;
+    padding: 60px 20px;
+    border: 1px dashed var(--border-line);
+    border-radius: 12px;
+    color: var(--text-muted);
+}
+
+.idle-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
+.idle-state h3 { color: var(--text-bright); margin: 4px 0; font-size: 1rem; }
+.idle-state p { font-size: 0.85rem; margin: 0; }
+
+@media (max-width: 800px) {
+    .telemetry-matrix { grid-template-columns: 1fr; }
+}

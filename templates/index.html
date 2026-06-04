@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Terminal Console</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="terminal-layout">
+    <div class="control-center">
+        <header class="console-header">
+            <span class="status-indicator">● SYSTEM ONLINE</span>
+            <h1>Credential Assessment Terminal</h1>
+            <p>Enterprise identity management and cryptographic analysis framework.</p>
+        </header>
+
+        <div class="input-container">
+            <div class="field-label">Target Credential String</div>
+            <div class="interactive-input">
+                <input type="password" id="passwordInput" placeholder="Input string for security scanning..." oninput="analyzePassword()">
+                <button type="button" id="toggleVisibility" onclick="togglePasswordVisibility()">👁️</button>
+            </div>
+        </div>
+
+        <div class="gauge-block">
+            <div class="gauge-meta">
+                <span>Security Tier Assessment:</span>
+                <span id="strengthLabel" class="status-tier-0">Awaiting Input...</span>
+            </div>
+            <div class="segmented-bar">
+                <div class="bar-seg seg-0"></div>
+                <div class="bar-seg seg-1"></div>
+                <div class="bar-seg seg-2"></div>
+                <div class="bar-seg seg-3"></div>
+                <div class="bar-seg seg-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="telemetry-matrix" id="telemetryMatrix" style="display: none;">
+        <div class="matrix-card vulnerability-card">
+            <div class="card-title">Vulnerability Indicators</div>
+            <ul id="warningsList" class="alert-list"></ul>
+        </div>
+
+        <div class="matrix-card optimization-card">
+            <div class="card-title">System Recommendations</div>
+            <ul id="improvementsList" class="optimization-list"></ul>
+        </div>
+
+        <div class="matrix-card crypto-card">
+            <div class="card-title">Cryptographic Storage</div>
+            <div class="crypto-details">
+                <div class="algo-tag">SHA-256 Hashing Engine</div>
+                <div class="hash-box">
+                    <code id="hashValue"></code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="idle-state" id="idleState">
+        <div class="idle-icon">🎛️</div>
+        <h3>System Telemetry Idle</h3>
+        <p>Awaiting credential input string to initialize analytical metrics.</p>
+    </div>
+</div>
+
+<script>
+    function togglePasswordVisibility() {
+        const input = document.getElementById('passwordInput');
+        const btn = document.getElementById('toggleVisibility');
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.innerText = '🙈';
+        } else {
+            input.type = 'password';
+            btn.innerText = '👁️';
+        }
+    }
+
+    function analyzePassword() {
+        const password = document.getElementById('passwordInput').value;
+        const idleState = document.getElementById('idleState');
+        const matrix = document.getElementById('telemetryMatrix');
+        const segments = document.querySelectorAll('.bar-seg');
+        const label = document.getElementById('strengthLabel');
+
+        if (password.length === 0) {
+            idleState.style.display = 'block';
+            matrix.style.display = 'none';
+            segments.forEach(s => s.classList.remove('active'));
+            label.innerText = 'Awaiting Input...';
+            label.className = 'status-tier-0';
+            return;
+        }
+
+        fetch('/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: password })
+        })
+            .then(response => response.json())
+            .then(data => {
+                idleState.style.display = 'none';
+                matrix.style.display = 'grid';
+
+                // Track visual bar segments
+                segments.forEach((seg, index) => {
+                    if (index <= data.score) {
+                        seg.classList.add('active');
+                    } else {
+                        seg.classList.remove('active');
+                    }
+                });
+
+                const tiers = ["CRITICAL WEAKNESS", "LOW SECURITY", "MARGINAL COMPLIANCE", "STRONG SECURITY", "OPTIMAL ACCREDITATION"];
+                label.innerText = tiers[data.score];
+                label.className = `status-tier-${data.score}`;
+
+                // Update Warnings List
+                const warningsList = document.getElementById('warningsList');
+                warningsList.innerHTML = '';
+                if(data.warnings.length === 0) {
+                    warningsList.innerHTML = '<li class="no-issue">✓ System signature clean.</li>';
+                } else {
+                    data.warnings.forEach(w => warningsList.innerHTML += `<li class="issue-found">⚠️ ${w}</li>`);
+                }
+
+                // Update Recommendations List
+                const improvementsList = document.getElementById('improvementsList');
+                improvementsList.innerHTML = '';
+                data.improvements.forEach(i => improvementsList.innerHTML += `<li>⚡ ${i}</li>`);
+
+                // Update Hash string output
+                document.getElementById('hashValue').innerText = data.hash_preview;
+            });
+    }
+</script>
+</body>
+</html>
